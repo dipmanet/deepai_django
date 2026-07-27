@@ -1,0 +1,18 @@
+/* styles.css
+   Entry point — imports every partial so templates can keep using a single
+   <link href="{% static 'css/styles.css' %}"> without changes.
+
+   If you want to reduce what a given page downloads, skip this file and
+   link only the partials that page needs instead, e.g. on chat.html:
+     <link rel="stylesheet" href="{% static 'css/base.css' %}">
+     <link rel="stylesheet" href="{% static 'css/chat.css' %}">
+   and on the auth pages:
+     <link rel="stylesheet" href="{% static 'css/base.css' %}">
+     <link rel="stylesheet" href="{% static 'css/components.css' %}">
+     <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+   ========================================================================= */
+
+@import url("base.css");
+@import url("components.css");
+@import url("auth.css");
+@import url("chat.css");

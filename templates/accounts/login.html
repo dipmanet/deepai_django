@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Log in · Thread{% endblock %}
+
+{% block body %}
+<div class="auth-shell">
+  <aside class="auth-story">
+    {% include "_brand_mark.html" %}
+    <div class="auth-story-body">
+      <h1>Every conversation, kept in order.</h1>
+      <p>Sign back in to pick up exactly where you left off — your history and projects are waiting.</p>
+      <div class="auth-story-thread">
+        <div class="bubble">Draft a launch checklist for the beta.</div>
+        <div class="bubble reply">Here's a fourteen-point checklist, grouped by team.</div>
+      </div>
+    </div>
+    <p class="auth-story-foot">Your conversations stay private to your account.</p>
+  </aside>
+
+  <section class="auth-form-side">
+    {% include "_theme_toggle.html" %}
+    <div class="auth-card">
+      <h2>Welcome back</h2>
+      <p class="subhead">Log in to continue your conversations.</p>
+
+      {% if form.non_field_errors %}
+        <div class="alert alert-error">
+          {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+        </div>
+      {% endif %}
+
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="field">
+          <label for="{{ form.username.id_for_label }}">Username</label>
+          {{ form.username }}
+          {{ form.username.errors }}
+        </div>
+        <div class="field">
+          <label for="{{ form.password.id_for_label }}">Password</label>
+          {{ form.password }}
+          {{ form.password.errors }}
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Log in</button>
+      </form>
+
+      <p class="auth-foot-link">
+        <a href="{% url 'password_reset' %}">Forgot your password?</a>
+      </p>
+      <p class="auth-foot-link">
+        New here? <a href="{% url 'register' %}">Create an account</a>
+      </p>
+    </div>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,75 @@
+/* auth.css
+   Split-screen layout for login, register, and the password-reset flow
+   (.auth-shell / .auth-story / .auth-form-side / .auth-card).
+   Only loaded on accounts/*.html pages.
+   ========================================================================= */
+
+/* =========================================================
+   Auth layout (split screen)
+   ========================================================= */
+.auth-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.auth-story {
+  position: relative;
+  background: var(--accent);
+  color: #F5FBF8;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+.auth-story::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(255,255,255,0.10) 0, transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(255,255,255,0.08) 0, transparent 45%);
+  pointer-events: none;
+}
+.auth-story .brand-mark { color: #F5FBF8; }
+.auth-story-body { position: relative; max-width: 420px; }
+.auth-story-body h1 {
+  font-size: 2.3rem;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin-bottom: 1rem;
+}
+.auth-story-body p { color: rgba(245, 251, 248, 0.82); font-size: 0.98rem; }
+.auth-story-thread { position: relative; display: flex; flex-direction: column; gap: 0.6rem; margin-top: 2.2rem; }
+.auth-story-thread .bubble {
+  align-self: flex-start;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.16);
+  padding: 0.55rem 0.85rem;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  max-width: 78%;
+}
+.auth-story-thread .bubble.reply { align-self: flex-end; background: rgba(255,255,255,0.20); }
+.auth-story-foot { position: relative; font-size: 0.78rem; color: rgba(245, 251, 248, 0.65); }
+
+.auth-form-side {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  position: relative;
+}
+.auth-form-side .theme-toggle { position: absolute; top: 1.75rem; right: 1.75rem; }
+.auth-card { width: 100%; max-width: 380px; }
+.auth-card h2 { font-size: 1.5rem; margin-bottom: 0.3rem; }
+.auth-card .subhead { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.8rem; }
+.auth-foot-link { margin-top: 1.4rem; font-size: 0.86rem; color: var(--text-muted); text-align: center; }
+.auth-foot-link a { color: var(--accent); font-weight: 600; }
+.auth-foot-link a:hover { text-decoration: underline; }
+
+@media (max-width: 860px) {
+  .auth-shell { grid-template-columns: 1fr; }
+  .auth-story { display: none; }
+}
+

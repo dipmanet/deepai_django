@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Create account · Thread{% endblock %}
+
+{% block body %}
+<div class="auth-shell">
+  <aside class="auth-story">
+    {% include "_brand_mark.html" %}
+    <div class="auth-story-body">
+      <h1>Start a thread worth keeping.</h1>
+      <p>Group related chats into projects, revisit anything from your history, and never lose a good answer again.</p>
+      <div class="auth-story-thread">
+        <div class="bubble">Summarize our onboarding project so far.</div>
+        <div class="bubble reply">Three conversations, twelve decisions logged.</div>
+      </div>
+    </div>
+    <p class="auth-story-foot">Free to join. No credit card required.</p>
+  </aside>
+
+  <section class="auth-form-side">
+    {% include "_theme_toggle.html" %}
+    <div class="auth-card">
+      <h2>Create your account</h2>
+      <p class="subhead">A few details and you're in.</p>
+
+      {% if form.non_field_errors %}
+        <div class="alert alert-error">
+          {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+        </div>
+      {% endif %}
+
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="field">
+          <label for="{{ form.username.id_for_label }}">Username</label>
+          {{ form.username }}
+          {{ form.username.errors }}
+        </div>
+        <div class="field">
+          <label for="{{ form.first_name.id_for_label }}">First name</label>
+          {{ form.first_name }}
+          {{ form.first_name.errors }}
+        </div>
+        <div class="field">
+          <label for="{{ form.last_name.id_for_label }}">Last name</label>
+          {{ form.last_name }}
+          {{ form.last_name.errors }}
+        </div>
+        <div class="field">
+          <label for="{{ form.email.id_for_label }}">Email</label>
+          {{ form.email }}
+          {% if form.email.help_text %}<p class="help-text">{{ form.email.help_text|safe }}</p>{% endif %}
+          {{ form.email.errors }}
+        </div>
+        <div class="field">
+          <label for="{{ form.password1.id_for_label }}">Password</label>
+          {{ form.password1 }}
+          {% if form.password1.help_text %}<p class="help-text">{{ form.password1.help_text|safe }}</p>{% endif %}
+          {{ form.password1.errors }}
+        </div>
+        <div class="field">
+          <label for="{{ form.password2.id_for_label }}">Confirm password</label>
+          {{ form.password2 }}
+          {{ form.password2.errors }}
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Create account</button>
+      </form>
+
+      <p class="auth-foot-link">
+        Already have an account? <a href="{% url 'login' %}">Log in</a>
+      </p>
+    </div>
+  </section>
+</div>
+{% endblock %}

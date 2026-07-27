@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Thread{% endblock %}
+
+{% block body %}
+<div class="chat-shell"
+     id="chat-shell"
+     data-api-chat-url="{% url 'chat_api' %}"
+     data-api-conversations-url="{% url 'conversation-list' %}"
+     data-api-projects-url="{% url 'project-list' %}">
+
+  <!-- ============ Sidebar ============ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      {% include "_brand_mark.html" %}
+      <button type="button" class="btn btn-ghost" id="close-sidebar-btn" aria-label="Close sidebar" style="display:none;">✕</button>
+    </div>
+
+    <div class="sidebar-new">
+      <button type="button" class="btn btn-secondary btn-block" id="new-chat-btn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        New chat
+      </button>
+    </div>
+
+    <div class="sidebar-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="search-input" placeholder="Search conversations">
+    </div>
+
+    <div class="sidebar-scroll">
+      <div class="sidebar-section-label">
+        <span>Projects</span>
+      </div>
+      <div id="project-list">
+        {% for project in projects %}
+        <div class="project-row" data-project-id="{{ project.id }}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/></svg>
+          <span class="row-label">{{ project.name }}</span>
+          <button type="button" class="row-menu-btn" aria-label="Project options">⋯</button>
+        </div>
+        {% empty %}
+        <p class="help-text" style="padding: 0.3rem 0.6rem;">No projects yet.</p>
+        {% endfor %}
+      </div>
+      <button type="button" class="btn btn-ghost" id="new-project-btn" style="width:100%; justify-content:flex-start; padding-left:0.6rem; margin-top:0.2rem;">
+        + New project
+      </button>
+
+      <div class="sidebar-section-label">
+        <span>Recent</span>
+      </div>
+      <div id="conversation-list" class="convo-group">
+        {% for conversation in conversations %}
+        <div class="convo-row" data-conversation-id="{{ conversation.id }}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span class="row-label">{{ conversation.title }}</span>
+          <button type="button" class="row-menu-btn" aria-label="Conversation options">⋯</button>
+        </div>
+        {% empty %}
+        <p class="help-text recent-empty" style="padding: 0.3rem 0.6rem;">No conversations yet — start one above.</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="sidebar-foot">
+      <div class="user-chip">
+        <div class="user-avatar">{{ request.user.username|slice:":1"|upper }}</div>
+        <span class="user-name">{{ request.user.username }}</span>
+      </div>
+      <div class="user-chip-actions">
+        {% include "_theme_toggle.html" %}
+        <form method="post" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-ghost" aria-label="Log out" style="padding:0.4rem;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          </button>
+        </form>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ Main chat column ============ -->
+  <main class="chat-main">
+    <div class="chat-topbar">
+      <div class="chat-topbar-title">
+        <button type="button" class="btn btn-ghost mobile-menu-btn" id="open-sidebar-btn" aria-label="Open sidebar">☰</button>
+        <span id="current-conversation-title">New chat</span>
+        <span class="project-pill" id="current-project-pill" style="display:none;"></span>
+      </div>
+    </div>
+
+    <div class="chat-scroll" id="chat-scroll">
+      <div class="chat-empty" id="chat-empty">
+        <h2>What are we working on?</h2>
+        <p>Ask anything, or pick up a past conversation from the sidebar. Chats can be grouped into a project to keep related work together.</p>
+        <div class="suggestion-grid">
+          <button type="button" class="suggestion-card" data-suggestion="Summarize this article for me: ">Summarize an article</button>
+          <button type="button" class="suggestion-card" data-suggestion="Help me debug this error: ">Debug an error</button>
+          <button type="button" class="suggestion-card" data-suggestion="Draft an email about ">Draft an email</button>
+          <button type="button" class="suggestion-card" data-suggestion="Explain this concept simply: ">Explain a concept</button>
+        </div>
+      </div>
+      <div class="chat-thread" id="chat-thread" style="display:none;"></div>
+    </div>
+
+    <div class="composer-wrap">
+      <form class="composer" id="composer-form">
+        <textarea id="composer-input" rows="1" placeholder="Message Thread…" autofocus></textarea>
+        <button type="submit" class="composer-send" id="composer-send" aria-label="Send message">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+        </button>
+      </form>
+      <p class="composer-hint">Thread can make mistakes. Check important information.</p>
+    </div>
+  </main>
+</div>
+
+<div class="context-menu" id="conversation-context-menu" role="menu" aria-hidden="true"></div>
+
+<!-- ============ New project modal ============ -->
+<div class="modal-overlay" id="new-project-modal">
+  <div class="modal-card">
+    <h3>New project</h3>
+    <form id="new-project-form">
+      <div class="field">
+        <label for="project-name-input">Name</label>
+        <input type="text" id="project-name-input" placeholder="e.g. Website redesign" required>
+      </div>
+      <div class="field">
+        <label for="project-instructions-input">Instructions <span class="help-text" style="display:inline;">(optional)</span></label>
+        <textarea id="project-instructions-input" rows="3" placeholder="How should responses in this project behave?"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="cancel-project-btn">Cancel</button>
+        <button type="submit" class="btn btn-primary">Create project</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'js/chat.js' %}"></script>
+{% endblock %}
