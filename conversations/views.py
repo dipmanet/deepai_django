@@ -2,6 +2,7 @@ from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404
 
 from .models import Project, Conversation, Message
@@ -19,7 +20,13 @@ from django.shortcuts import render
 
 @login_required
 def chat_page(request):
-    projects = request.user.projects.all()
+    projects = request.user.projects.prefetch_related(
+        Prefetch(
+            "conversations",
+            queryset=Conversation.objects.filter(is_archived=False),
+            to_attr="visible_conversations",
+        )
+    )
     conversations = request.user.conversations.filter(
         is_archived=False,
         project__isnull=True,

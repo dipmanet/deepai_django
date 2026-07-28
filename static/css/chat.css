@@ -73,6 +73,24 @@
 }
 .project-row:hover, .convo-row:hover { background: var(--surface-hover); color: var(--text); }
 .project-row.active, .convo-row.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.convo-row[draggable="true"] { cursor: grab; }
+.convo-row.is-dragging {
+  cursor: grabbing;
+  opacity: 0.45;
+}
+.convo-row.is-moving {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.project-row.drop-target {
+  outline: 1px dashed var(--border);
+  outline-offset: -2px;
+}
+.project-row.drop-over {
+  background: var(--accent-soft);
+  color: var(--accent);
+  outline-color: var(--accent);
+}
 .project-row svg, .convo-row svg { flex-shrink: 0; width: 15px; height: 15px; opacity: 0.75; }
 .row-label { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .row-menu-btn {
@@ -118,6 +136,30 @@
 .context-menu-item:disabled {
   color: var(--text-faint);
   cursor: default;
+}
+
+.project-group { margin-bottom: 0.15rem; }
+.project-conversation-list {
+  position: relative;
+  margin: 0.1rem 0 0.35rem 0.85rem;
+  padding-left: 0.7rem;
+}
+.project-conversation-list::before {
+  content: "";
+  position: absolute;
+  left: 0.2rem;
+  top: 0.25rem;
+  bottom: 0.35rem;
+  width: 1px;
+  background: var(--border);
+}
+.project-convo-row {
+  padding-block: 0.42rem;
+  font-size: 0.82rem;
+}
+.project-empty {
+  padding: 0.25rem 0.6rem;
+  font-size: 0.78rem;
 }
 
 /* thread-line signature: a subtle connecting rail down grouped conversations */
