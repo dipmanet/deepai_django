@@ -89,7 +89,7 @@ LOGIN_REDIRECT_URL = "chat_page"
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 
-db_url = urlparse(config('DATABASE_URL'))
+db_url = urlparse(DATABASE_URL)
 query_params = parse_qs(db_url.query)
 
 DATABASES = {
@@ -141,5 +141,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_URL = "/static/"
+STATICFILES_DIRS = [BASE_DIR / "static"]
+STATIC_ROOT = BASE_DIR / "staticfiles"
