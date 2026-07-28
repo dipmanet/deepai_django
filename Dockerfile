@@ -12,6 +12,6 @@ COPY . .
 
 RUN python manage.py collectstatic --noinput
 
-EXPOSE 5000
+EXPOSE 8080
 
-CMD gunicorn core.wsgi:application --bind 0.0.0.0:${PORT:-5000}
+CMD gunicorn core.wsgi:application --bind 0.0.0.0:${PORT:-8080}
